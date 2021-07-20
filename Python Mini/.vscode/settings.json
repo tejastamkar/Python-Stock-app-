@@ -1,0 +1,18 @@
+{
+    "python.pythonPath": "C:\\Program Files\\Python39\\python.exe",
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "Stock",
+            "database": "stock",
+            "username": "root",
+            "password": "root"
+        }
+    ]
+}
