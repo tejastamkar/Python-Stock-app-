@@ -2,14 +2,14 @@ from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
 import datetime
-import tkcalendar as Cal
 from tkinter import messagebox
 import pymysql
 import cv2
 import os.path
 import numpy as np
-import shutil
 
+
+cameraport = 0 
 
 class Loginscreen:
 
@@ -33,19 +33,18 @@ class Loginscreen:
                         host="localhost", user="root", password="root", database="stock")
                     cur = conn.cursor()
                     cur.execute(
-                        "select  * from login where username = %s", (user_id.get()))
+                        "select  * from login where Username = %s", (user_id.get()))
                     temp = cur.fetchone()
                     if (temp != None):
                         cur.execute(
-                            "select  * from login where password = %s", (pwd.get()))
+                            "select  * from login where Password = %s", (pwd.get()))
                         temp = cur.fetchone()
                         username_txt = getuser(self)
-
                         if(temp != None):
                             temp = temp[3]
                             if(temp == "Admin"):
                                 root.destroy()
-                                ad.main()
+                                ad.main() 
                             elif(temp == "In"):
                                 root.destroy()
                                 Sin.main()
@@ -88,9 +87,9 @@ class Loginscreen:
                 ids = np.array(ids)
                 clf = cv2.face.LBPHFaceRecognizer_create()
                 clf.train(faces, ids)
-                clf.write("classifier.xml")
+                clf.write("Python Mini/classifier.xml")
 
-            train_classifier("data")
+            train_classifier("Python Mini/data")
 
             def draw_boundar(Img, classifier, scalefactor, minNeighbors, color, text, clf):
                 gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -149,10 +148,10 @@ class Loginscreen:
                 return Img, temp
 
             faceCascade = cv2.CascadeClassifier(
-                "haarcascade_frontalface_default.xml")
+                "Python Mini/haarcascade_frontalface_default.xml")
             clf = cv2.face.LBPHFaceRecognizer_create()
-            clf.read("classifier.xml")
-            video_capture = cv2.VideoCapture(1)
+            clf.read("Python Mini/classifier.xml")
+            video_capture = cv2.VideoCapture(cameraport)
             temp = 0
             while True:
                 ret, img = video_capture.read()
@@ -186,25 +185,25 @@ class Loginscreen:
         root.title("Retail Management")
 
         # background image input
-        BgImg = ImageTk.PhotoImage(Image.open("image/bgwall.png"))
+        BgImg = ImageTk.PhotoImage(Image.open("Python Mini/Image/bgwall.png"))
         Bg = Label(image=BgImg)
         Bg.configure(bg='#FFFFFF')
         Bg.place(relx=1, x=0, y=0, anchor=NE)
 
         # Adding header
-        header = ImageTk.PhotoImage(Image.open("image/head.png"))
+        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/Head.png"))
         head = Label(image=header)
         head.configure(bg='#FFFFFF')
         head.place(relx=0.45, anchor=NE)
 
         # adding login text
-        logintxt = ImageTk.PhotoImage(Image.open("image/Logintxt.png"))
+        logintxt = ImageTk.PhotoImage(Image.open("Python Mini/Image/Logintxt.png"))
         login = Label(image=logintxt)
         login.configure(bg='#FFFFFF')
         login.place(relx=0.33, rely=0.34, anchor=NE)
 
         # adding Face ID Button
-        FaceID = ImageTk.PhotoImage(Image.open("image/face_id.png"))
+        FaceID = ImageTk.PhotoImage(Image.open("Python Mini/Image/face_id.png"))
         Fbtn = Button(root, image=FaceID, command=getface)
         Fbtn.configure(bd=0, bg='#ffffff')
         Fbtn.place(relx=0.13, rely=0.52, anchor=NE)
@@ -233,14 +232,14 @@ class Loginscreen:
         pwd.place(relx=0.4, rely=0.63, anchor=NE)
 
         # Login Btn
-        Login_img = ImageTk.PhotoImage(Image.open("image/LoginBtn.png"))
+        Login_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/LoginBtn.png"))
         LoginBtn = Button(root, image=Login_img, command=Login)
         LoginBtn.configure(bd=0, bg='#ffffff')
         LoginBtn.place(relx=0.4, rely=0.7, anchor=NE)
         root.bind('<Return>', Login)
 
         # Close Btn
-        Close_img = ImageTk.PhotoImage(Image.open("image/CloseBtn.png"))
+        Close_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/CloseBtn.png"))
         CloseBtn = Button(root, image=Close_img, command=Close)
         CloseBtn.configure(bd=0, bg='#ffffff')
         CloseBtn.place(relx=0.25, rely=0.7, anchor=NE)
@@ -316,7 +315,7 @@ class Stockin:
         stockin.title("Retail Management")
 
         # header image input
-        header = ImageTk.PhotoImage(Image.open("image/in_head.png"))
+        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/In_head.png"))
         head = Label(image=header)
         head.configure(bg='#FFFFFF')
         head.place(relx=0.40, rely=0.31, anchor=NE)
@@ -324,7 +323,7 @@ class Stockin:
         e = datetime.datetime.now()
 
         # Logo image
-        Frame = Image.open("image/logo.png")
+        Frame = Image.open("Python Mini/Image/logo.png")
         Frame = ImageTk.PhotoImage(Frame)
         frame = Label(image=Frame)
         frame.configure(bg='#FFFFFF')
@@ -383,13 +382,13 @@ class Stockin:
         mins.place(relx=0.39, rely=0.765, anchor=NE)
 
         # Insert Btn
-        insert_img = ImageTk.PhotoImage(Image.open("image/InsertBtn.png"))
+        insert_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/InsertBtn.png"))
         InsertBtn = Button(stockin, image=insert_img, command=Insert)
         InsertBtn.configure(bd=0, bg='#ffffff')
         InsertBtn.place(relx=0.4, rely=0.85, anchor=NE)
 
         # Logout Btn
-        Logout_img = ImageTk.PhotoImage(Image.open("image/LogoutBtn.png"))
+        Logout_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/LogoutBtn.png"))
         LogoutBtn = Button(stockin, image=Logout_img, command=Logout)
         LogoutBtn.configure(bd=0, bg='#ffffff')
         LogoutBtn.place(relx=0.14, rely=0.85, anchor=NE)
@@ -499,14 +498,14 @@ class Stockout:
         stockout.title("Retail Management")
 
         # header image input
-        header = ImageTk.PhotoImage(Image.open("image/out_head.png"))
+        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/out_head.png"))
         head = Label(image=header)
         head.configure(bg='#FFFFFF')
         head.place(relx=0.40, rely=0.31, anchor=NE)
         username = ("Eout")
         e = datetime.datetime.now()
         # Logo image
-        Frame = Image.open("image/logo.png")
+        Frame = Image.open("Python Mini/Image/logo.png")
         Frame = ImageTk.PhotoImage(Frame)
         frame = Label(image=Frame)
         frame.configure(bg='#FFFFFF')
@@ -565,13 +564,13 @@ class Stockout:
         mins.place(relx=0.39, rely=0.765, anchor=NE)
 
         # Insert Btn
-        insert_img = ImageTk.PhotoImage(Image.open("image/InsertBtn.png"))
+        insert_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/InsertBtn.png"))
         InsertBtn = Button(stockout, image=insert_img, command=Insert)
         InsertBtn.configure(bd=0, bg='#ffffff')
         InsertBtn.place(relx=0.4, rely=0.85, anchor=NE)
 
         # Logout Btn
-        Logout_img = ImageTk.PhotoImage(Image.open("image/LogoutBtn.png"))
+        Logout_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/LogoutBtn.png"))
         LogoutBtn = Button(stockout, image=Logout_img, command=Logout)
         LogoutBtn.configure(bd=0, bg='#ffffff')
         LogoutBtn.place(relx=0.14, rely=0.85, anchor=NE)
@@ -684,19 +683,19 @@ class Admin:
         date_txt.place(relx=0.18, rely=0.35, anchor=NE)
 
         # adding logo
-        header = ImageTk.PhotoImage(Image.open("image/logo.png"))
+        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/logo.png"))
         logo = Label(image=header)
         logo.configure(bg='#FFFFFF')
         logo.place(relx=0.35, anchor=NE)
         # Insert Btn
-        regbtn_img = ImageTk.PhotoImage(Image.open("image/SignupBtn.png"))
+        regbtn_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/SignupBtn.png"))
         regBtn = Button(admin, image=regbtn_img, command=reg)
         regBtn.configure(bd=0, bg='#ffffff')
         regBtn.place(relx=0.24, rely=0.25, anchor=NE)
 
         # Logout Btn
         Logout_img = ImageTk.PhotoImage(
-            Image.open("image/Admin_LogoutBtn.png"))
+            Image.open("Python Mini/Image/Admin_LogoutBtn.png"))
         LogoutBtn = Button(admin, image=Logout_img, command=Logout)
         LogoutBtn.configure(bd=0, bg='#ffffff')
         LogoutBtn.place(relx=0.48, rely=0.25,  anchor=NE)
@@ -824,27 +823,27 @@ class Signup:
                     InEmp_ty.deselect()
                     OutEmp_ty.deselect()
                     for i in range(1, 51):
-                        file_name_path = "data/user_" + \
+                        file_name_path = "Python Mini/data/user_" + \
                             str(id) + "_" + str(i) + ".jpg"
-                        original = r'C:\Users\Ron\Desktop\Test_1\my_folder'
-                        target = r'C:\Users\Ron\Desktop\Test_2\my_folder'
-                        shutil.move(original, target)
+                        # original = r'C:\Users\Ron\Desktop\Test_1\my_folder'
+                        # target = r'C:\Users\Ron\Desktop\Test_2\my_folder'
+                        # shutil.move(original, target)
             else:
                 messagebox.showerror("Error", "Please Enter details Properly")
 
         def generate():
             face_classifier = cv2.CascadeClassifier(
-                "haarcascade_frontalface_default.xml")
+                "Python Mini/haarcascade_frontalface_default.xml")
 
             def face_cropped(img):
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+                faces = face_classifier.detectMultiScale(gray, 1.3, 3)
                 if faces == ():
                     return None
                 for (x, y, w, h) in faces:
                     cropped_face = img[y:y + h, x:x + w]
                     return cropped_face
-            cap = cv2.VideoCapture(1)
+            cap = cv2.VideoCapture(cameraport)
             id = 1
             cur.execute("select * from login")
             result = cur.fetchall()
@@ -857,7 +856,7 @@ class Signup:
                     img_id += 1
                     face = cv2.resize(face_cropped(frame), (250, 250))
                     face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
-                    file_name_path = "data/user_" + \
+                    file_name_path = "Python Mini/data/user_" + \
                         str(id) + "_" + str(img_id) + ".jpg"
                     cv2.imwrite(file_name_path, face)
                     cv2.putText(face, str(img_id), (50, 50),
@@ -878,25 +877,25 @@ class Signup:
         Signup.title("Retail Management")
 
         # background image input
-        BgImg = ImageTk.PhotoImage(Image.open("image/Bg_Sign.png"))
+        BgImg = ImageTk.PhotoImage(Image.open("Python Mini/Image/Bg_Sign.png"))
         Bg = Label(image=BgImg)
         Bg.configure(bg='#FFFFFF')
         Bg.place(relx=1, x=0, y=0, anchor=NE)
 
         # Adding header
-        header = ImageTk.PhotoImage(Image.open("image/head.png"))
+        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/Head.png"))
         head = Label(image=header)
         head.configure(bg='#FFFFFF')
         head.place(relx=0.75, anchor=NE)
 
         # adding Registration text
-        Regtxt = ImageTk.PhotoImage(Image.open("image/Registration.png"))
+        Regtxt = ImageTk.PhotoImage(Image.open("Python Mini/Image/Registration.png"))
         reg = Label(image=Regtxt)
         reg.configure(bg='#FFFFFF')
         reg.place(relx=0.4, rely=0.065, anchor=NE)
 
         # adding Face ID Button
-        FaceID = ImageTk.PhotoImage(Image.open("image/face_id.png"))
+        FaceID = ImageTk.PhotoImage(Image.open("Python Mini/Image/face_id.png"))
         Fbtn = Button(Signup, image=FaceID, command=generate)
         Fbtn.configure(bd=0, bg='#ffffff')
         Fbtn.place(relx=0.74, rely=0.44, anchor=NE)
@@ -946,19 +945,19 @@ class Signup:
         re_pwd.place(relx=0.4, rely=0.734, anchor=NE)
 
         # Registration  Btn
-        reg_img = ImageTk.PhotoImage(Image.open("image/RegBtn.png"))
+        reg_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/RegBtn.png"))
         regBtn = Button(Signup, image=reg_img, command=Register)
         regBtn.configure(bd=0, bg='#ffffff')
         regBtn.place(relx=0.415, rely=0.8, anchor=NE)
 
         # Clear  Btn
-        clear_img = ImageTk.PhotoImage(Image.open("image/clearBtn.png"))
+        clear_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/ClearBtn.png"))
         clearBtn = Button(Signup, image=clear_img, command=Clear)
         clearBtn.configure(bd=0, bg='#ffffff')
         clearBtn.place(relx=0.285, rely=0.8, anchor=NE)
 
         # Cancel Btn
-        Cancel_img = ImageTk.PhotoImage(Image.open("image/CancelBtn.png"))
+        Cancel_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/CancelBtn.png"))
         CancelBtn = Button(Signup, image=Cancel_img, command=Cancel)
         CancelBtn.configure(bd=0, bg='#ffffff')
         CancelBtn.place(relx=0.15, rely=0.8, anchor=NE)

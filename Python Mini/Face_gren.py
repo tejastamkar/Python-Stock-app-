@@ -7,7 +7,7 @@ import pymysql
 
 def generate():
     face_classifier = cv2.CascadeClassifier(
-        "haarcascade_frontalface_default.xml")
+        "Python Mini/haarcascade_frontalface_default.xml")
 
     def face_cropped(img):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -38,7 +38,7 @@ def generate():
 
     cv2.destroyAllWindows()
     print("Working....")
-# generate()
+generate()
 
 
 def train_classifier(data):
@@ -54,10 +54,10 @@ def train_classifier(data):
     ids = np.array(ids)
     clf = cv2.face.LBPHFaceRecognizer_create()
     clf.train(faces, ids)
-    clf.write("classifier.xml")
+    clf.write("Python Mini/classifier.xml")
 
 
-train_classifier("data")
+# train_classifier("data")
 
 
 def draw_boundar(Img, classifier, scalefactor, minNeighbors, color, text, clf):
@@ -119,9 +119,9 @@ def recognizers(Img, clf, faceCascade):
     return Img, temp
 
 
-faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+faceCascade = cv2.CascadeClassifier("Python Mini/haarcascade_frontalface_default.xml")
 clf = cv2.face.LBPHFaceRecognizer_create()
-clf.read("classifier.xml")
+clf.read("Python Mini/classifier.xml")
 video_capture = cv2.VideoCapture(1)
 temp = 0
 while True:
@@ -134,5 +134,5 @@ while True:
     if cv2.waitKey(1) == 13:
         break
 
-video_capture.release()
+# video_capture.release()
 cv2.destroyAllWindows()
