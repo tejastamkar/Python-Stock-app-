@@ -9,29 +9,30 @@ import os.path
 import numpy as np
 
 
-cameraport = 0 
+cameraport = 0
+conn = pymysql.connect(
+    host="localhost", user="root", password="root", database="stock")
+cur = conn.cursor()
+
 
 class Loginscreen:
-
     def main(self):
         def Close():
             temp = messagebox.askyesno("Warring", "Do you want to Close")
             if (temp):
-                root.destroy()  
+                root.destroy()
 
         # getting the user name
         def getuser(self):
             username_txt = user_id.get()
             return username_txt
 
-        def Login(event = None):
+        def Login(event=None):
             if (user_id.get() == "" and pwd.get() == ""):
                 messagebox.showerror("Error", "Plz Enter right Details")
             else:
                 try:
-                    conn = pymysql.connect(
-                        host="localhost", user="root", password="root", database="stock")
-                    cur = conn.cursor()
+
                     cur.execute(
                         "select  * from login where Username = %s", (user_id.get()))
                     temp = cur.fetchone()
@@ -40,15 +41,15 @@ class Loginscreen:
                             "select  * from login where Password = %s", (pwd.get()))
                         temp = cur.fetchone()
                         username_txt = getuser(self)
-                        if(temp != None):
+                        if (temp != None):
                             temp = temp[3]
-                            if(temp == "Admin"):
+                            if (temp == "Admin"):
                                 root.destroy()
-                                ad.main() 
-                            elif(temp == "In"):
+                                ad.main()
+                            elif (temp == "In"):
                                 root.destroy()
                                 Sin.main()
-                            elif(temp == "Out"):
+                            elif (temp == "Out"):
                                 root.destroy()
                                 Sout.main()
                             else:
@@ -97,9 +98,7 @@ class Loginscreen:
                     gray_image, scalefactor, minNeighbors)
                 temp = 0
                 coords = []
-                conn = pymysql.connect(
-                    host="localhost", user="root", password="root", database="stock")
-                cur = conn.cursor()
+
                 cur.execute("Select * from login")
                 d = cur.fetchall()
                 ad = []
@@ -117,11 +116,11 @@ class Loginscreen:
                         ein.append(temp[0])
                     if temp[3] == "Out":
                         eout.append(temp[0])
-                for(x, y, w, h) in features:
+                for (x, y, w, h) in features:
                     cv2.rectangle(img, (x, y), (x+w, y+h), color, 2)
                     id, pred = clf.predict(gray_image[y:y+h, x:x+w])
                     confidence = int(100*(1 - pred/300))
-                    if (confidence > 75):
+                    if (confidence > 88):
                         if id in ad:
                             cv2.putText(img, "Admin", (x, y-5),
                                         cv2.FONT_HERSHEY_COMPLEX, 0.8, color, 1, cv2.LINE_AA)
@@ -131,7 +130,7 @@ class Loginscreen:
                                         cv2.FONT_HERSHEY_COMPLEX, 0.8, color, 1, cv2.LINE_AA)
                             temp = 2
 
-                        if id in eout :
+                        if id in eout:
                             cv2.putText(img, "Eout", (x, y-5),
                                         cv2.FONT_HERSHEY_COMPLEX, 0.8, color, 1, cv2.LINE_AA)
                             temp = 3
@@ -197,13 +196,15 @@ class Loginscreen:
         head.place(relx=0.45, anchor=NE)
 
         # adding login text
-        logintxt = ImageTk.PhotoImage(Image.open("Python Mini/Image/Logintxt.png"))
+        logintxt = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/Logintxt.png"))
         login = Label(image=logintxt)
         login.configure(bg='#FFFFFF')
         login.place(relx=0.33, rely=0.34, anchor=NE)
 
         # adding Face ID Button
-        FaceID = ImageTk.PhotoImage(Image.open("Python Mini/Image/face_id.png"))
+        FaceID = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/face_id.png"))
         Fbtn = Button(root, image=FaceID, command=getface)
         Fbtn.configure(bd=0, bg='#ffffff')
         Fbtn.place(relx=0.13, rely=0.52, anchor=NE)
@@ -232,14 +233,16 @@ class Loginscreen:
         pwd.place(relx=0.4, rely=0.63, anchor=NE)
 
         # Login Btn
-        Login_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/LoginBtn.png"))
+        Login_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/LoginBtn.png"))
         LoginBtn = Button(root, image=Login_img, command=Login)
         LoginBtn.configure(bd=0, bg='#ffffff')
         LoginBtn.place(relx=0.4, rely=0.7, anchor=NE)
         root.bind('<Return>', Login)
 
         # Close Btn
-        Close_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/CloseBtn.png"))
+        Close_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/CloseBtn.png"))
         CloseBtn = Button(root, image=Close_img, command=Close)
         CloseBtn.configure(bd=0, bg='#ffffff')
         CloseBtn.place(relx=0.25, rely=0.7, anchor=NE)
@@ -265,7 +268,7 @@ class Stockin:
             for record in outstock_tv.get_children():
                 outstock_tv.delete(record)
 
-        def Insert(event = None):
+        def Insert(event=None):
             hour = str(e.hour)
             minute = str(e.minute)
             sec = str(e.second)
@@ -291,9 +294,6 @@ class Stockin:
             return True
 
         # sql treeveiw query
-        conn = pymysql.connect(
-            host="localhost", user="root", password="root", database="stock")
-        cur = conn.cursor()
 
         def stockcall(instock_tv, outstock_tv):
             sql = "select * from stockin ORDER by Date DESC"
@@ -315,7 +315,8 @@ class Stockin:
         stockin.title("Retail Management")
 
         # header image input
-        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/In_head.png"))
+        header = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/In_head.png"))
         head = Label(image=header)
         head.configure(bg='#FFFFFF')
         head.place(relx=0.40, rely=0.31, anchor=NE)
@@ -382,13 +383,15 @@ class Stockin:
         mins.place(relx=0.39, rely=0.765, anchor=NE)
 
         # Insert Btn
-        insert_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/InsertBtn.png"))
+        insert_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/InsertBtn.png"))
         InsertBtn = Button(stockin, image=insert_img, command=Insert)
         InsertBtn.configure(bd=0, bg='#ffffff')
         InsertBtn.place(relx=0.4, rely=0.85, anchor=NE)
 
         # Logout Btn
-        Logout_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/LogoutBtn.png"))
+        Logout_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/LogoutBtn.png"))
         LogoutBtn = Button(stockin, image=Logout_img, command=Logout)
         LogoutBtn.configure(bd=0, bg='#ffffff')
         LogoutBtn.place(relx=0.14, rely=0.85, anchor=NE)
@@ -448,7 +451,7 @@ class Stockout:
             for record in outstock_tv.get_children():
                 outstock_tv.delete(record)
 
-        def Insert(event = None):
+        def Insert(event=None):
             hour = str(e.hour)
             minute = str(e.minute)
             sec = str(e.second)
@@ -474,9 +477,6 @@ class Stockout:
             return True
 
         # sql treeveiw query
-        conn = pymysql.connect(host="localhost", user="root",
-                               password="root", database="stock")
-        cur = conn.cursor()
 
         def stockcall(instock_tv, outstock_tv):
             sql = "select * from stockin ORDER by Date DESC"
@@ -498,7 +498,8 @@ class Stockout:
         stockout.title("Retail Management")
 
         # header image input
-        header = ImageTk.PhotoImage(Image.open("Python Mini/Image/out_head.png"))
+        header = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/out_head.png"))
         head = Label(image=header)
         head.configure(bg='#FFFFFF')
         head.place(relx=0.40, rely=0.31, anchor=NE)
@@ -564,13 +565,15 @@ class Stockout:
         mins.place(relx=0.39, rely=0.765, anchor=NE)
 
         # Insert Btn
-        insert_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/InsertBtn.png"))
+        insert_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/InsertBtn.png"))
         InsertBtn = Button(stockout, image=insert_img, command=Insert)
         InsertBtn.configure(bd=0, bg='#ffffff')
         InsertBtn.place(relx=0.4, rely=0.85, anchor=NE)
 
         # Logout Btn
-        Logout_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/LogoutBtn.png"))
+        Logout_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/LogoutBtn.png"))
         LogoutBtn = Button(stockout, image=Logout_img, command=Logout)
         LogoutBtn.configure(bd=0, bg='#ffffff')
         LogoutBtn.place(relx=0.14, rely=0.85, anchor=NE)
@@ -636,10 +639,6 @@ class Admin:
             Sign.main()
             return True
 
-        conn = pymysql.connect(
-            host="localhost", user="root", password="root", database="stock")
-        cur = conn.cursor()
-
         admin = Tk()
         admin.geometry("1366x768")
         admin.configure(bg='#FFFFFF')
@@ -688,7 +687,8 @@ class Admin:
         logo.configure(bg='#FFFFFF')
         logo.place(relx=0.35, anchor=NE)
         # Insert Btn
-        regbtn_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/SignupBtn.png"))
+        regbtn_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/SignupBtn.png"))
         regBtn = Button(admin, image=regbtn_img, command=reg)
         regBtn.configure(bd=0, bg='#ffffff')
         regBtn.place(relx=0.24, rely=0.25, anchor=NE)
@@ -800,12 +800,10 @@ class Signup:
             acc = Check_acc.get()
             repwd = re_pwd.get()
             if (password == re_pwd.get() and name != " " and userid != " " and password != " "):
-                if(acc == "None"):
+                if (acc == "None"):
                     messagebox.showerror("Error", "Select Employee Type")
                 else:
-                    conn = pymysql.connect(
-                        host="localhost", user="root", password="root", database="stock")
-                    cur = conn.cursor()
+
                     id = 1
                     cur.execute("select * from login")
                     result = cur.fetchall()
@@ -867,9 +865,7 @@ class Signup:
             cap.release()
             cv2.destroyAllWindows()
             print("Working....")
-        conn = pymysql.connect(
-            host="localhost", user="root", password="root", database="stock")
-        cur = conn.cursor()
+
         # Signup to make a Signup window and set the window size
         Signup = Tk()
         Signup.geometry("1366x768")
@@ -889,13 +885,15 @@ class Signup:
         head.place(relx=0.75, anchor=NE)
 
         # adding Registration text
-        Regtxt = ImageTk.PhotoImage(Image.open("Python Mini/Image/Registration.png"))
+        Regtxt = ImageTk.PhotoImage(Image.open(
+            "Python Mini/Image/Registration.png"))
         reg = Label(image=Regtxt)
         reg.configure(bg='#FFFFFF')
         reg.place(relx=0.4, rely=0.065, anchor=NE)
 
         # adding Face ID Button
-        FaceID = ImageTk.PhotoImage(Image.open("Python Mini/Image/face_id.png"))
+        FaceID = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/face_id.png"))
         Fbtn = Button(Signup, image=FaceID, command=generate)
         Fbtn.configure(bd=0, bg='#ffffff')
         Fbtn.place(relx=0.74, rely=0.44, anchor=NE)
@@ -945,19 +943,22 @@ class Signup:
         re_pwd.place(relx=0.4, rely=0.734, anchor=NE)
 
         # Registration  Btn
-        reg_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/RegBtn.png"))
+        reg_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/RegBtn.png"))
         regBtn = Button(Signup, image=reg_img, command=Register)
         regBtn.configure(bd=0, bg='#ffffff')
         regBtn.place(relx=0.415, rely=0.8, anchor=NE)
 
         # Clear  Btn
-        clear_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/ClearBtn.png"))
+        clear_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/ClearBtn.png"))
         clearBtn = Button(Signup, image=clear_img, command=Clear)
         clearBtn.configure(bd=0, bg='#ffffff')
         clearBtn.place(relx=0.285, rely=0.8, anchor=NE)
 
         # Cancel Btn
-        Cancel_img = ImageTk.PhotoImage(Image.open("Python Mini/Image/CancelBtn.png"))
+        Cancel_img = ImageTk.PhotoImage(
+            Image.open("Python Mini/Image/CancelBtn.png"))
         CancelBtn = Button(Signup, image=Cancel_img, command=Cancel)
         CancelBtn.configure(bd=0, bg='#ffffff')
         CancelBtn.place(relx=0.15, rely=0.8, anchor=NE)
